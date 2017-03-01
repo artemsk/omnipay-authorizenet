@@ -27,11 +27,9 @@ class AIMGetHostedPaymentPageRequest extends AIMPurchaseRequest
         $this->addCustomerIP($data);
         $this->addTransactionSettings($data);
 
-        foreach(['hostedPaymentReturnOptions', 'hostedPaymentButtonOptions', 'hostedPaymentSecurityOptions',
-            'hostedPaymentShippingAddressOptions', 'hostedPaymentBillingAddressOptions',
-            'hostedPaymentCustomerOptions'] as $settingName => $settingValue) {
-            
-            $this->addMoreTransactionSettings($data, $settingName, $settingValue);
+        $data->addChild('hostedPaymentSettings');
+        foreach($this->getHostedPaymentSettings() ?: [] as $settingName => $settingValue) {
+            $this->addHostedPaymentSettings($data, $settingName, $settingValue);
         }
 
         return $data;
@@ -53,11 +51,21 @@ class AIMGetHostedPaymentPageRequest extends AIMPurchaseRequest
         }
     }
 
-    protected function addMoreTransactionSettings($data, $name, $value)
+    protected function addHostedPaymentSettings($data, $name, $value)
     {
-        $setting = $data->transactionRequest->transactionSettings->addChild('setting');
+        $setting = $data->hostedPaymentSettings->addChild('setting');
         $setting->settingName = $name;
         $setting->settingValue = json_encode($value);
+    }
+
+    public function setHostedPaymentSettings($value)
+    {
+        return $this->setParameter('hostedPaymentSettings', $value);
+    }
+
+    public function getHostedPaymentSettings()
+    {
+        return $this->getParameter('hostedPaymentSettings');
     }
 
     public function sendData($data)
