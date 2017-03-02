@@ -22,7 +22,8 @@ class AIMGetHostedPaymentPageRequest extends AIMPurchaseRequest
         $data->transactionRequest->order->invoiceNumber = $this->getInvoiceNumber();
         $data->transactionRequest->order->description = $this->getDescription();
         $this->addItems($data);
-        
+
+        $data->transactionRequest->poNumber = $this->getPoNumber();
         $this->addBillingData($data);        
         $this->addCustomerIP($data);
         $this->addTransactionSettings($data);
@@ -76,5 +77,15 @@ class AIMGetHostedPaymentPageRequest extends AIMPurchaseRequest
         $httpResponse = $this->httpClient->post($this->getEndpoint(), $headers, $data)->send();
 
         return $this->response = new AIMGetHostedPaymentPageResponse($this, $httpResponse->getBody());
+    }
+
+    public function getPoNumber()
+    {
+        return $this->getParameter('poNumber');
+    }
+
+    public function setPoNumber($value)
+    {
+        return $this->setParameter('poNumber', $value);
     }
 }

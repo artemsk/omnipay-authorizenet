@@ -13,10 +13,12 @@ use Omnipay\Common\Message\AbstractResponse;
  */
 class AIMGetHostedPaymentPageResponse extends AbstractResponse
 {
+    protected $requestType = 'getHostedPaymentPageResponse';
+    
     public function __construct(AbstractRequest $request, $data)
     {
         // Strip out the xmlns junk so that PHP can parse the XML
-        $xml = preg_replace('/<getHostedPaymentPageResponse[^>]+>/', '<getHostedPaymentPageResponse>', (string)$data);
+        $xml = preg_replace('/<' . $this->requestType . '[^>]+>/', '<' . $this->requestType . '>', (string)$data);
 
         try {
             $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOWARNING);
